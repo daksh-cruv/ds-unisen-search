@@ -1,0 +1,12 @@
+{
+    "boards": {
+        "CBSE": {
+            "csv_path": "data\\input\\cbse_schools.csv",
+            "pkl_path": "data\\output\\cbse_embeddings.pkl"
+        },
+        "ICSE": {
+            "csv_path": "data\\input\\icse_schools.csv",
+            "pkl_path": "data\\output\\icse_embeddings.pkl"
+        }
+    }
+}
