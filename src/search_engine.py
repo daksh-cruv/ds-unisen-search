@@ -6,6 +6,13 @@ import pandas as pd
 
 
 class SearchEngine(AbbrSchoolMatcher, FuzzySchoolMatcher):
+
+    """
+    This class loads the CSV and PKL files into memory and performs search based on the board name.
+    It is reponsible for loading the data and selecting the dataset based on the board name.
+    The 'search()' method performs search based on the word lengths in the query.
+    """
+
     _instance = None
 
     def __new__(cls):
@@ -19,20 +26,16 @@ class SearchEngine(AbbrSchoolMatcher, FuzzySchoolMatcher):
             return
         self.initialized = True
 
-        # Initialize the SearchEngine with query and dataset
-        # self.query = query
-        # self.dataset = dataset.value
-
         self.loader = DataLoader()
 
-        # self.schools_df = loader.clean_data(self.schools_df, "temp_address")
-
+        # Load the JSON file containing the paths to the CSV and PKL files
         self.json_file = open(r"data\input\board_file_paths.json", "r")
         self.json_data = json.load(self.json_file)
         self.board_data = self.json_data["boards"]
         self.board_data_holder = {}
 
         self.board_data_loader()
+
         # Initialize the AbbrSchoolMatcher and FuzzySchoolMatcher classes
         super().__init__()
         super(AbbrSchoolMatcher, self).__init__()
@@ -63,16 +66,17 @@ class SearchEngine(AbbrSchoolMatcher, FuzzySchoolMatcher):
 
 
     def search(self, query: str, board: str) -> list:
-
-        schools_df, schools_embeddings = self.select_dataset(board=board.upper())
-
-
+        
         """
         Perform search based on word lengths in the query.
         if all words are less than or equal to 4 characters, perform abbreviation search
         if all words are greater than 4 characters, perform fuzzy search
-        else perform both and combine the results
+        else perform both and combine the results.
+        Fuzzy search requires a cleaned string, abbreviation search does not.
         """
+
+        # Retrieve the dataframe and embeddings based on the board name
+        schools_df, schools_embeddings = self.select_dataset(board=board.upper())
         words = query.split()
         if all(len(word) <= 4 for word in words):
             results = self.abbreviation_search(query=query, schools_df=schools_df)
@@ -97,7 +101,7 @@ class SearchEngine(AbbrSchoolMatcher, FuzzySchoolMatcher):
             """
             Adjust the score based on the count of short and long words.
             If the count of short words is less than the count of long words, adjust the score of fuzzy results,
-            else adjust the score of abbreviation results
+            else adjust the score of abbreviation results.
             """
             if count_short_words < count_long_words:
                 results = [(name, address, score + 10) if score is not None else None for name, address, score in fuzzy_results] + abbreviation_results

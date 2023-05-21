@@ -5,6 +5,13 @@ from data_loader import DataLoader
 
 
 class TrainModel:
+
+    """
+    This class is used to train the sentence transformer model on the dataset.
+    It loads the dataset from the csv file, cleans the data, and encodes the addresses into embeddings.
+    The input file path and destination path are passed as command-line arguments.
+    The final embeddings are saved to a pickle file.
+    """
     def __init__(self):
         # Define the model name for sentence transformation
         self.model_name = 'all-MiniLM-L6-v2'

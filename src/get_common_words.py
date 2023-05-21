@@ -2,8 +2,18 @@ import sys
 import pandas as pd
 from collections import Counter
 
+
 class GetCommonWords:
-    def get_common_words(self):
+
+    """
+    The following class is used to get the most common words from the school names.
+    The get_common_words() method returns a list of the most common words.
+    It takes the file paths as command line arguments.
+    If a word is less than or equal to 4 characters and greater than 1 character,
+    it is added to the final list.
+    """
+
+    def get_common_words(self) -> list:
         files = sys.argv[1:]  # Retrieve command line arguments excluding the script name
         schools = []
         for file in files:
